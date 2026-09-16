@@ -21,4 +21,4 @@
 
 ---
 
-https://nidsaimlpybyanshul.streamlit.app/
+Deployed : https://nidsaimlpybyanshul.streamlit.app/
