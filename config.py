@@ -26,6 +26,7 @@ NSL_KDD_COLUMNS = [
 
 # Mapping individual attack names to primary 5 classes
 ATTACK_CATEGORY_MAP = {
+    
     # Normal
     "normal": "Normal",
     
