@@ -63,6 +63,7 @@ MITRE_MAPPING = {
 
 # Threat Severity Levels
 SEVERITY_MAPPING = {
+    
     "Normal": "LOW",
     "Probe": "MEDIUM",
     "DoS": "HIGH",
