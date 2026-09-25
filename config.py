@@ -52,6 +52,7 @@ ATTACK_CATEGORY_MAP = {
 
 # MITRE ATT&CK Mapping
 MITRE_MAPPING = {
+    
     "DoS": {"tactic": "Impact", "technique_id": "T1499", "technique_name": "Endpoint Denial of Service"},
     "Probe": {"tactic": "Discovery", "technique_id": "T1046", "technique_name": "Network Service Discovery"},
     "R2L": {"tactic": "Initial Access", "technique_id": "T1110", "technique_name": "Brute Force / Credential Access"},
