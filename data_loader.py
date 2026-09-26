@@ -8,11 +8,13 @@ SOURCE_NSL_KDD_DIRS = [
     r"c:\Users\hp\OneDrive\Desktop\anshnew\infosys"
 ]
 
+
 def ensure_dataset_available():
     train_dest = os.path.join(DATA_DIR, "KDDTrain+.txt")
     test_dest = os.path.join(DATA_DIR, "KDDTest+.txt")
     
     if not os.path.exists(train_dest):
+        
         for src_dir in SOURCE_NSL_KDD_DIRS:
             # Prefer 20Percent for swift, responsive training if present, or full
             src_train_20 = os.path.join(src_dir, "KDDTrain+_20Percent.txt")
