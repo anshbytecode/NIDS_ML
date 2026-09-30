@@ -21,6 +21,8 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 model = XGBClassifier(
+
+    
     n_estimators=200,
     max_depth=6,
     learning_rate=0.1,
