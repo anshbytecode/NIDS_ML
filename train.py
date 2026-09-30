@@ -27,6 +27,8 @@ model = XGBClassifier(
     max_depth=6,
     learning_rate=0.1,
     eval_metric="logloss"
+
+    
 )
 
 model.fit(X_train, y_train)
