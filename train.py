@@ -12,6 +12,8 @@ os.makedirs("models", exist_ok=True)
 df = pd.read_csv("data/dataset.csv")
 
 X = df.drop("label", axis=1)
+
+
 y = df["label"]
 
 X_train, X_test, y_train, y_test = train_test_split(
