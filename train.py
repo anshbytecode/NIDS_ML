@@ -9,6 +9,8 @@ import os
 os.makedirs("models", exist_ok=True)
 
 # Load dataset
+
+
 df = pd.read_csv("data/dataset.csv")
 
 X = df.drop("label", axis=1)
