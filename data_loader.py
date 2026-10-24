@@ -18,12 +18,15 @@ def ensure_dataset_available():
         for src_dir in SOURCE_NSL_KDD_DIRS:
             # Prefer 20Percent for swift, responsive training if present, or full
             src_train_20 = os.path.join(src_dir, "KDDTrain+_20Percent.txt")
+            
             src_train_full = os.path.join(src_dir, "KDDTrain+.txt")
+            
             src_test = os.path.join(src_dir, "KDDTest+.txt")
             
             src_train = src_train_20 if os.path.exists(src_train_20) else src_train_full
             
             if os.path.exists(src_train) and not os.path.exists(train_dest):
+                
                 print(f"Copying training dataset from {src_train} -> {train_dest}")
                 shutil.copyfile(src_train, train_dest)
             
