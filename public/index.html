@@ -646,7 +646,7 @@
     async function checkHealth() {
       const badgeText = document.getElementById('api-status-text');
       try {
-        const res = await fetch(`${API_BASE}/api/health`);
+        const res = await fetch(`${API_BASE}/api`);
         if (res.ok) {
           const data = await res.json();
           badgeText.textContent = data.model_loaded ? 'API Online • Model Loaded' : 'API Online • Model Standby';
@@ -680,7 +680,7 @@
       };
 
       try {
-        const res = await fetch(`${API_BASE}/api/predict`, {
+        const res = await fetch(`${API_BASE}/api`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)

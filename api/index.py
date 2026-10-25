@@ -77,6 +77,8 @@ def health():
         "supported_features": ["duration", "src_bytes", "dst_bytes", "count"]
     }
 
+@app.post("/")
+@app.post("/api")
 @app.post("/predict")
 @app.post("/api/predict")
 def predict_traffic(flow: FlowRequest):
