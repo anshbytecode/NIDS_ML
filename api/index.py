@@ -66,6 +66,7 @@ def evaluate_traffic_flow(duration: float, src_bytes: float, dst_bytes: float, c
 
 @app.get("/")
 @app.get("/api")
+@app.get("/health")
 @app.get("/api/health")
 def health():
     return {
