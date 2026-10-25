@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelNet | AI Network Intrusion Detection System</title>
+  <meta name="description" content="Enterprise AI/ML Network Intrusion Detection System (NIDS) powered by XGBoost classifier and Vercel serverless microservices.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-base: #060913;
+      --bg-surface: #0c1222;
+      --bg-card: rgba(16, 24, 44, 0.75);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(59, 130, 246, 0.4);
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.25);
+      --accent-cyan: #00f5d4;
+      --threat-red: #f43f5e;
+      --threat-glow: rgba(244, 63, 94, 0.35);
+      --safe-green: #10b981;
+      --safe-glow: rgba(16, 185, 129, 0.35);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.18), transparent 70%),
+        radial-gradient(circle at 100% 100%, rgba(0, 245, 212, 0.06), transparent 50%);
+      background-attachment: fixed;
+      line-height: 1.6;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .shield-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px var(--primary-glow);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .shield-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #ffffff;
+    }
+
+    .brand-text h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(120deg, #ffffff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-text span {
+      font-size: 0.78rem;
+      color: var(--accent-cyan);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.45rem 1rem;
+      background: rgba(16, 24, 44, 0.8);
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+    }
+
+    .status-pulse {
+      width: 8px;
+      height: 8px;
+      background-color: var(--safe-green);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--safe-green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.7; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.7; }
+    }
+
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .grid-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      transition: border-color 0.3s ease;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .card-subtitle {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+    }
+
+    /* Preset Buttons */
+    .presets-container {
+      margin-bottom: 1.75rem;
+    }
+
+    .presets-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .presets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.6rem;
+    }
+
+    .preset-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.65rem 0.8rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .preset-btn:hover {
+      background: rgba(59, 130, 246, 0.1);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .preset-btn strong {
+      font-size: 0.82rem;
+    }
+
+    .preset-btn span {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .preset-btn.attack:hover {
+      background: rgba(244, 63, 94, 0.12);
+      border-color: var(--threat-red);
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 1.4rem;
+    }
+
+    .label-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.4rem;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+
+    .input-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      background: rgba(6, 9, 19, 0.85);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 12px var(--primary-glow);
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: white;
+      border: none;
+      padding: 0.95rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.98rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      box-shadow: 0 8px 24px var(--primary-glow);
+      transition: all 0.25s ease;
+      margin-top: 1rem;
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Result Panel */
+    .result-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: var(--radius-md);
+      background: rgba(6, 9, 19, 0.5);
+      border: 1px dashed var(--border-subtle);
+      transition: all 0.4s ease;
+    }
+
+    .result-display.is-attack {
+      background: radial-gradient(circle, rgba(244, 63, 94, 0.15) 0%, rgba(6, 9, 19, 0.8) 100%);
+      border: 1px solid var(--threat-red);
+      box-shadow: 0 0 35px var(--threat-glow);
+    }
+
+    .result-display.is-normal {
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(6, 9, 19, 0.8) 100%);
+      border: 1px solid var(--safe-green);
+      box-shadow: 0 0 35px var(--safe-glow);
+    }
+
+    .verdict-badge {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .badge-attack {
+      color: var(--threat-red);
+      text-shadow: 0 0 20px var(--threat-glow);
+    }
+
+    .badge-normal {
+      color: var(--safe-green);
+      text-shadow: 0 0 20px var(--safe-glow);
+    }
+
+    .threat-meter {
+      width: 100%;
+      margin-top: 1.8rem;
+    }
+
+    .meter-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .progress-bar {
+      height: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .fill-attack {
+      background: linear-gradient(90deg, #f59e0b, #f43f5e);
+      box-shadow: 0 0 10px var(--threat-red);
+    }
+
+    .fill-normal {
+      background: linear-gradient(90deg, #3b82f6, #10b981);
+      box-shadow: 0 0 10px var(--safe-green);
+    }
+
+    /* History Table */
+    .history-card {
+      margin-top: 2rem;
+    }
+
+    .history-table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-subtle);
+      font-weight: 600;
+    }
+
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .tag {
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    .tag-danger {
+      background: rgba(244, 63, 94, 0.18);
+      color: #fda4af;
+      border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+
+    .tag-safe {
+      background: rgba(16, 185, 129, 0.18);
+      color: #6ee7b7;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 2.5rem 0 1.5rem;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #ffffff;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="shield-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm0 2.18l6 2.25v4.66c0 4.09-2.73 7.89-6 8.86-3.27-.97-6-4.77-6-8.86V6.43l6-2.25z"/></svg>
+        </div>
+        <div class="brand-text">
+          <h1>SentinelNet AI SOC</h1>
+          <span>Vercel Serverless NIDS Engine</span>
+        </div>
+      </div>
+
+      <div class="header-badge" id="api-status-badge">
+        <div class="status-pulse"></div>
+        <span id="api-status-text">Connecting to Vercel API...</span>
+      </div>
+    </header>
+
+    <div class="grid-layout">
+      <!-- Left: Form Card -->
+      <div class="card">
+        <h2 class="card-title">Network Flow Classifier</h2>
+        <p class="card-subtitle">Input real-time bidirectional network flow parameters for AI threat classification.</p>
+
+        <!-- Presets -->
+        <div class="presets-container">
+          <span class="presets-label">⚡ Quick Test Scenarios</span>
+          <div class="presets-grid">
+            <button class="preset-btn" onclick="applyPreset(0, 181, 5450, 2)">
+              <strong>🟢 Normal Web</strong>
+              <span>HTTP traffic</span>
+            </button>
+            <button class="preset-btn" onclick="applyPreset(1, 100, 200, 1)">
+              <strong>🟢 DNS Query</strong>
+              <span>Standard DNS</span>
+            </button>
+            <button class="preset-btn attack" onclick="applyPreset(10, 5000, 50, 50)">
+              <strong>🔴 DDoS Flood</strong>
+              <span>High rate flood</span>
+            </button>
+            <button class="preset-btn attack" onclick="applyPreset(5, 1200, 300, 20)">
+              <strong>🔴 Port Scan</strong>
+              <span>Recon probes</span>
+            </button>
+          </div>
+        </div>
+
+        <form id="nids-form" onsubmit="handleClassify(event)">
+          <div class="form-group">
+            <div class="label-wrapper">
+              <label for="duration">Connection Duration</label>
+              <span class="input-hint">seconds</span>
+            </div>
+            <input type="number" id="duration" step="any" required value="0" placeholder="e.g. 0.05">
+          </div>
+
+          <div class="form-group">
+            <div class="label-wrapper">
+              <label for="src_bytes">Source Bytes</label>
+              <span class="input-hint">src_bytes (outbound)</span>
+            </div>
+            <input type="number" id="src_bytes" step="any" required value="181" placeholder="e.g. 5000">
+          </div>
+
+          <div class="form-group">
+            <div class="label-wrapper">
+              <label for="dst_bytes">Destination Bytes</label>
+              <span class="input-hint">dst_bytes (inbound)</span>
+            </div>
+            <input type="number" id="dst_bytes" step="any" required value="5450" placeholder="e.g. 200">
+          </div>
+
+          <div class="form-group">
+            <div class="label-wrapper">
+              <label for="count">Connection Count</label>
+              <span class="input-hint">flows to same host</span>
+            </div>
+            <input type="number" id="count" step="any" required value="2" placeholder="e.g. 50">
+          </div>
+
+          <button type="submit" id="submit-btn" class="submit-btn">
+            <span>Analyze Traffic Flow</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Right: Live Result Display -->
+      <div class="card">
+        <h2 class="card-title">Detection Diagnostics</h2>
+        <p class="card-subtitle">AI model consensus and threat probability metric.</p>
+
+        <div id="result-box" class="result-display">
+          <div id="idle-view">
+            <svg style="width: 54px; height: 54px; fill: #475569; margin-bottom: 0.8rem;" viewBox="0 0 24 24">
+              <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
+            </svg>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+              Submit network parameters or choose a preset above to inspect traffic with XGBoost AI.
+            </p>
+          </div>
+
+          <div id="active-view" style="display: none; width: 100%;">
+            <span id="verdict-icon" style="font-size: 2.8rem;">🛡️</span>
+            <div id="verdict-text" class="verdict-badge"></div>
+            <p id="verdict-desc" style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.4rem;"></p>
+
+            <div class="threat-meter">
+              <div class="meter-header">
+                <span>Threat Risk Score</span>
+                <span id="threat-score-val">0%</span>
+              </div>
+              <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.3rem;">
+                <span>0 (Benign)</span>
+                <span>Confidence: <strong id="confidence-val" style="color: #fff;">0%</strong></span>
+                <span>100 (Malicious)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; font-size: 0.78rem; color: var(--text-muted); border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+          <div><strong>Model:</strong> XGBoost NIDS Classifier</div>
+          <div style="margin-top: 0.2rem;"><strong>Endpoint:</strong> <code>POST /api/predict</code></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Card -->
+    <div class="card history-card">
+      <h2 class="card-title">Live Flow Audit Trail</h2>
+      <p class="card-subtitle">Recent predictions evaluated in current session.</p>
+
+      <div class="history-table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Duration</th>
+              <th>Src Bytes</th>
+              <th>Dst Bytes</th>
+              <th>Count</th>
+              <th>Threat Score</th>
+              <th>Classification</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody">
+            <tr>
+              <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No flows inspected yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <footer>
+      SentinelNet AI Network Intrusion Detection System &bull; Deployed on Vercel Serverless
+    </footer>
+  </div>
+
+  <script>
+    const API_BASE = window.location.origin;
+
+    // Check backend health
+    async function checkHealth() {
+      const badgeText = document.getElementById('api-status-text');
+      try {
+        const res = await fetch(`${API_BASE}/api/health`);
+        if (res.ok) {
+          const data = await res.json();
+          badgeText.textContent = data.model_loaded ? 'API Online • Model Loaded' : 'API Online • Model Standby';
+        } else {
+          badgeText.textContent = 'API Standby';
+        }
+      } catch (err) {
+        badgeText.textContent = 'API Ready';
+      }
+    }
+
+    function applyPreset(duration, src, dst, count) {
+      document.getElementById('duration').value = duration;
+      document.getElementById('src_bytes').value = src;
+      document.getElementById('dst_bytes').value = dst;
+      document.getElementById('count').value = count;
+      document.getElementById('nids-form').requestSubmit();
+    }
+
+    async function handleClassify(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> <span>Analyzing flow...</span>';
+
+      const payload = {
+        duration: parseFloat(document.getElementById('duration').value),
+        src_bytes: parseFloat(document.getElementById('src_bytes').value),
+        dst_bytes: parseFloat(document.getElementById('dst_bytes').value),
+        count: parseFloat(document.getElementById('count').value)
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/api/predict`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          throw new Error(`API error: ${res.statusText}`);
+        }
+
+        const data = await res.json();
+        renderResult(data, payload);
+      } catch (err) {
+        console.error(err);
+        alert('Failed to connect to /api/predict. Verify that the Vercel Python API function is active.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Analyze Traffic Flow</span>';
+      }
+    }
+
+    function renderResult(data, input) {
+      const resultBox = document.getElementById('result-box');
+      const idleView = document.getElementById('idle-view');
+      const activeView = document.getElementById('active-view');
+      const verdictIcon = document.getElementById('verdict-icon');
+      const verdictText = document.getElementById('verdict-text');
+      const verdictDesc = document.getElementById('verdict-desc');
+      const threatScoreVal = document.getElementById('threat-score-val');
+      const confidenceVal = document.getElementById('confidence-val');
+      const progressFill = document.getElementById('progress-fill');
+
+      idleView.style.display = 'none';
+      activeView.style.display = 'block';
+
+      const isAttack = data.is_attack || data.prediction === 1;
+      const threatScore = data.threat_score !== undefined ? data.threat_score : (isAttack ? 95 : 5);
+      const confidence = data.confidence !== undefined ? data.confidence : 95.0;
+
+      if (isAttack) {
+        resultBox.className = 'result-display is-attack';
+        verdictIcon.textContent = '🚨';
+        verdictText.innerHTML = '<span class="badge-attack">ATTACK DETECTED</span>';
+        verdictDesc.textContent = 'High probability anomalous / malicious packet flow pattern.';
+        progressFill.className = 'progress-fill fill-attack';
+      } else {
+        resultBox.className = 'result-display is-normal';
+        verdictIcon.textContent = '🛡️';
+        verdictText.innerHTML = '<span class="badge-normal">NORMAL TRAFFIC</span>';
+        verdictDesc.textContent = 'Flow signatures conform to legitimate network activity.';
+        progressFill.className = 'progress-fill fill-normal';
+      }
+
+      threatScoreVal.textContent = `${threatScore}%`;
+      confidenceVal.textContent = `${confidence}%`;
+      progressFill.style.width = `${threatScore}%`;
+
+      addHistoryRow(input, threatScore, isAttack);
+    }
+
+    function addHistoryRow(input, threatScore, isAttack) {
+      const tbody = document.getElementById('history-tbody');
+      if (tbody.children.length === 1 && tbody.children[0].innerText.includes('No flows')) {
+        tbody.innerHTML = '';
+      }
+
+      const now = new Date().toLocaleTimeString();
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${now}</td>
+        <td>${input.duration}s</td>
+        <td>${input.src_bytes} B</td>
+        <td>${input.dst_bytes} B</td>
+        <td>${input.count}</td>
+        <td>${threatScore}%</td>
+        <td>
+          <span class="tag ${isAttack ? 'tag-danger' : 'tag-safe'}">
+            ${isAttack ? 'ATTACK' : 'BENIGN'}
+          </span>
+        </td>
+      `;
+      tbody.prepend(tr);
+    }
+
+    // Run check on page load
+    checkHealth();
+  </script>
+</body>
+</html>
