@@ -1,6 +1,12 @@
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Detect project root directory correctly
+cur_dir = os.path.dirname(os.path.abspath(__file__))
+if os.path.basename(cur_dir) == "src":
+    BASE_DIR = os.path.dirname(cur_dir)
+else:
+    BASE_DIR = cur_dir
+
 DATA_DIR = os.path.join(BASE_DIR, "data")
 MODELS_DIR = os.path.join(BASE_DIR, "models")
 DB_PATH = os.path.join(BASE_DIR, "nids_events.db")
