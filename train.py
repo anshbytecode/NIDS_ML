@@ -4,16 +4,10 @@ from xgboost import XGBClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 
-
-
 import joblib
 import os
 
-# Ensure folder exists
 os.makedirs("models", exist_ok=True)
-
-
-# Load dataset
 
 
 df = pd.read_csv("data/dataset.csv")
