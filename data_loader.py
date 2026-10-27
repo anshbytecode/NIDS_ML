@@ -7,8 +7,6 @@ SOURCE_NSL_KDD_DIRS = [
     r"c:\Users\hp\OneDrive\Desktop\anshnew\infosys\nsl-kdd",
     r"c:\Users\hp\OneDrive\Desktop\anshnew\infosys"
 ]
-
-
 def ensure_dataset_available():
     train_dest = os.path.join(DATA_DIR, "KDDTrain+.txt")
     test_dest = os.path.join(DATA_DIR, "KDDTest+.txt")
@@ -28,6 +26,7 @@ def ensure_dataset_available():
             if os.path.exists(src_train) and not os.path.exists(train_dest):
                 
                 print(f"Copying training dataset from {src_train} -> {train_dest}")
+                
                 shutil.copyfile(src_train, train_dest)
             
             if os.path.exists(src_test) and not os.path.exists(test_dest):
