@@ -6,6 +6,7 @@ from src.config import DATA_DIR, NSL_KDD_COLUMNS, ATTACK_CATEGORY_MAP
 SOURCE_NSL_KDD_DIRS = [
     r"c:\Users\hp\OneDrive\Desktop\anshnew\infosys\nsl-kdd",
     r"c:\Users\hp\OneDrive\Desktop\anshnew\infosys"
+    
 ]
 def ensure_dataset_available():
     train_dest = os.path.join(DATA_DIR, "KDDTrain+.txt")
@@ -22,6 +23,7 @@ def ensure_dataset_available():
             src_test = os.path.join(src_dir, "KDDTest+.txt")
             
             src_train = src_train_20 if os.path.exists(src_train_20) else src_train_full
+            
             
             if os.path.exists(src_train) and not os.path.exists(train_dest):
                 
