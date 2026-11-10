@@ -9,7 +9,9 @@ else:
 
 DATA_DIR = os.path.join(BASE_DIR, "data")
 MODELS_DIR = os.path.join(BASE_DIR, "models")
+
 DB_PATH = os.path.join(BASE_DIR, "nids_events.db")
+
 REPORTS_DIR = os.path.join(BASE_DIR, "reports")
 
 os.makedirs(DATA_DIR, exist_ok=True)
